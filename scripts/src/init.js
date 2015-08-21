@@ -1,5 +1,5 @@
 // polyfill for animation frame
-( function() {
+;( function() {
   var lastTime = 0;
   var vendors = ['ms', 'moz', 'webkit', 'o'];
   for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
@@ -218,6 +218,7 @@ function resizeGame() {
   if(game.started)
     game.init();
 }
+
 window.addEventListener('resize', resizeGame, false);
 window.addEventListener('orientationchange', resizeGame, false);
 //
@@ -236,6 +237,10 @@ $(function() {
   
   $("#btn-pause").click(function() {
     pause();
+  });
+
+  $("#btn-reset").click(function() {
+    game.nextStage("reset");
   });
   
   $("#btn-fullscreen").click(function() {

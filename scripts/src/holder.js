@@ -29,19 +29,44 @@ function Holder(id, game, x, y, line, column, moveble) {
     this.column = null;
     this.moveble = null;
   }
+  this.occupied = false;
   
 }
 
+Holder.prototype.occupy = function(){
+  var r = new Array();
+  var dx, dy, distance;
+  for(i = 0; i<this.game.holders.length; i++){
+    dx = this.game.selected.x - this.game.holders[i].x;
+    dy = this.game.selected.y - this.game.holders[i].y;
+    distance = (dx * dx + dy * dy);
+    if(distance <= this.game.selected.tolerance){
+      this.game.holders[i].occupied = true;
+      r.push(i);
+    }
+  }
+  for(j = 0; j<this.game.selected.createdShapes.length; j++){
+    for(i = 0; i<this.game.holders.length; i++){
+    dx = this.game.selected.createdShapes[j].x - this.game.holders[i].x;
+    dy = this.game.selected.createdShapes[j].y - this.game.holders[i].y;
+    distance = (dx * dx + dy * dy);
+    if(distance <= this.game.selected.tolerance){
+      this.game.holders[i].occupied = true;
+      r.push(i);
+    }
+    }
+  }
+  return r;
+};
+
+Holder.prototype.deOccupy = function(occupiedArray){
+  for(i = 0; i<occupiedArray.length; i++){
+    this.game.holders[occupiedArray[i]].occupied = false;
+  }
+
+};
+
 Holder.prototype.draw = function() {
-  //this.game.context.save();
-  //this.game.context.globalAlpha = 0.15
-  //this.game.context.fillStyle = "rgba(255, 255, 255, 0.5)";
-  //this.game.context.beginPath();
-  this.game.context.lineWidth = 1;
+  this.game.context.lineWidth = 2;
   this.game.context.strokeRect(this.x-this.game.piece_width/2,this.y-this.game.piece_height/2,this.game.piece_width,this.game.piece_height);
-  //this.game.context.fillRect(holder.x-this.piece_width/2,holder.y-this.piece_height/2,this.piece_width,this.piece_height);
-  //this.game.context.fillStyle = "rgba(0, 0, 0, 0.5)";
-  //this.game.context.fillText(this.id, this.x-3, this.y+3);
-  //this.game.context.closePath();
-  //this.game.context.restore();
-}
+};

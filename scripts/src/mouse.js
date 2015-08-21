@@ -155,6 +155,12 @@ Mouse.prototype.mousedown = function(e) {
   //select
   if(this.game.over){
     this.game.selected = this.game.over;
+    if(this.game.selected.placed){
+      this.game.placed_pieces.splice(this.game.placed_pieces.indexOf(this.game.selected), 1);
+      this.game.selected.placed = false;
+      Holder.prototype.deOccupy.call(this, this.game.selected.occupiedinfo);
+      this.game.selected.occupiedinfo = null;
+    }
   }
 
   if(this.game.debug){
@@ -173,20 +179,23 @@ Mouse.prototype.mouseup = function(e) {
   this.up = true;
   this.down = false;
   this.event = e;
-
+  if(this.game.selected){
+    this.checkNear = this.game.selected.near();
+  }
   //place
-  if((this.game.selected)&&(this.game.selected.near())&&(!this.game.selected.placed)){
-    this.game.selected.x = this.game.selected.target.x;
-    this.game.selected.y = this.game.selected.target.y;
+  if((this.game.selected)&&(this.checkNear)&&(!this.game.selected.placed)){
+    this.game.selected.x = this.checkNear.x;
+    this.game.selected.y = this.checkNear.y;
     this.game.selected.placed = true;
-    this.game.selected.moveble = false;
+    this.game.selected.occupiedinfo = Holder.prototype.occupy.call(this);
+   // this.game.selected.moveble = false;
     this.game.placed_pieces.push(this.game.selected);
     if(this.game.drip.currentTime != 0)
       this.game.drip.currentTime = 0;
     this.game.drip.play();
-  }else if((this.game.selected)&&(!this.game.selected.near())){
-    this.game.selected.p = 0
-    this.game.selected.moveble = false;
+  }else if((this.game.selected)&&(!this.checkNear)){
+    this.game.selected.p = 0;
+    //this.game.selected.moveble = false;
     this.game.selected.placed = false;
     //this.game.selected.startPoint.x = this.game.selected.iniPoint.x;
     //this.game.selected.startPoint.y = this.game.selected.iniPoint.y;
@@ -204,7 +213,7 @@ Mouse.prototype.mouseup = function(e) {
     console.log('up');
   }
 
-}
+};
 
 /*****
  *
@@ -225,7 +234,7 @@ Mouse.prototype.touchstart = function(e) {
     console.log('touch start');
   }
   
-}
+};
 
 /*****
  *
@@ -243,20 +252,23 @@ Mouse.prototype.touchend = function(e) {
   this.down = false;
   this.x = -1;
   this.y = -1;
-
+  if(this.game.selected){
+    this.checkNear = this.game.selected.near();
+  }
   //place
-  if((this.game.selected)&&(this.game.selected.near())&&(!this.game.selected.placed)){
-    this.game.selected.x = this.game.selected.target.x;
-    this.game.selected.y = this.game.selected.target.y;
+  if((this.game.selected)&&(this.checkNear)&&(!this.game.selected.placed)){
+    this.game.selected.x = this.checkNear.x;
+    this.game.selected.y = this.checkNear.y;
     this.game.selected.placed = true;
-    this.game.selected.moveble = false;
+    this.game.selected.occupiedinfo = Holder.prototype.occupy.call(this);
+   // this.game.selected.moveble = false;
     this.game.placed_pieces.push(this.game.selected);
     if(this.game.drip.currentTime != 0)
       this.game.drip.currentTime = 0;
     this.game.drip.play();
-  }else if((this.game.selected)&&(!this.game.selected.near())){
-    this.game.selected.p = 0
-    this.game.selected.moveble = false;
+  }else if((this.game.selected)&&(!this.checkNear)){
+    this.game.selected.p = 0;
+    //this.game.selected.moveble = false;
     this.game.selected.placed = false;
     //this.game.selected.startPoint.x = this.game.selected.iniPoint.x;
     //this.game.selected.startPoint.y = this.game.selected.iniPoint.y;
@@ -265,8 +277,8 @@ Mouse.prototype.touchend = function(e) {
     if(this.game.twang.currentTime != 0)
       this.game.twang.currentTime = 0;
     this.game.twang.play();
-    this.game.selected = null;
   }
+
   
   //unselect
   this.game.selected = null;
@@ -278,7 +290,7 @@ Mouse.prototype.touchend = function(e) {
  *   touchmove
  *
  *****/
-Mouse.prototype.touchmove = function(e) {
+;Mouse.prototype.touchmove = function(e) {
 
   e.preventDefault();
 
@@ -311,9 +323,15 @@ Mouse.prototype.touchmove = function(e) {
   //select
   if(this.game.over){
     this.game.selected = this.game.over;
+    if(this.game.selected.placed){
+      this.game.placed_pieces.splice(this.game.placed_pieces.indexOf(this.game.selected), 1);
+      this.game.selected.placed = false;
+      Holder.prototype.deOccupy.call(this, this.game.selected.occupiedinfo);
+      this.game.selected.occupiedinfo = null;
+    }
   }
 
   if(this.game.debug)
     console.log('touchmove '+xx);
 
-}
+};
